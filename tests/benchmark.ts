@@ -4,14 +4,16 @@ import globber from 'glob'
 import tinyGlob from 'tiny-glob'
 import { glob as myGlob } from '../src/glob'
 import path from 'path'
+import assert from 'assert'
 
 const glob = './**'
 console.log(path.resolve(glob))
 
 const benchmark = (name: string, f) => async () => {
     console.time(name)
-    await f()
+    const res = await f()
     console.timeEnd(name)
+    return res
 }
 
 describe('benchmarks', () => {
@@ -69,4 +71,12 @@ describe('benchmarks', () => {
             // console.log(files)
         }),
     )
+})
+
+describe('smart-glob', () => {
+    it('second run is faster', async () => {
+        const files1 = await benchmark('1', () => myGlob('**', {}))()
+        const files2 = await benchmark('1', () => myGlob('**', {}))()
+        assert.equal(files1.length, files2.length)
+    })
 })
