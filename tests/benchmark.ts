@@ -2,7 +2,7 @@ import fastGlob from 'fast-glob'
 import globby from 'globby'
 import globber from 'glob'
 import tinyGlob from 'tiny-glob'
-import { glob as myGlob } from '../src/glob'
+import { glob as myGlob, memoizedGlob } from '../src/glob'
 import path from 'path'
 import assert from 'assert'
 
@@ -75,8 +75,8 @@ describe('benchmarks', () => {
 
 describe('smart-glob', () => {
     it('second run is faster', async () => {
-        const files1 = await benchmark('1', () => myGlob('**', {}))()
-        const files2 = await benchmark('1', () => myGlob('**', {}))()
+        const files1 = await benchmark('1', () => memoizedGlob('**'))()
+        const files2 = await benchmark('1', () => memoizedGlob('**'))()
         assert.equal(files1.length, files2.length)
     })
 })

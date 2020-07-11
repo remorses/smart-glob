@@ -1,6 +1,7 @@
 import { promises as fs, lstatSync, Stats } from 'fs'
 import globrex from 'globrex'
 import globalyzer from 'globalyzer'
+import memoize from 'memoizee'
 import { join, resolve, relative, basename } from 'path'
 import uniq from 'lodash.uniq'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
@@ -91,7 +92,7 @@ export async function glob(str, opts: GlobOptions = {}): Promise<string[]> {
     if (gitignore) {
         ignore = [...ignore, ...(await getGlobsFromGit())]
     }
-    ignore= uniq(ignore)
+    ignore = uniq(ignore)
 
     opts.cwd = opts.cwd || '.'
 
@@ -123,6 +124,14 @@ export async function glob(str, opts: GlobOptions = {}): Promise<string[]> {
 
     return opts.absolute ? matches.map((x) => resolve(opts.cwd, x)) : matches
 }
+
+export const memoizedGlob: typeof glob = memoize(glob, {
+    promise: true,
+    normalizer: (args) => {
+        // args is arguments object as accessible in memoized function
+        return args[0] + JSON.stringify(args[1])
+    },
+})
 
 export const getGlobsFromGit = async (data = '') => {
     try {
