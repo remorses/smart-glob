@@ -4,6 +4,8 @@
 
 This is useful when you want to ignore certain folders from being scanned like `node_modules`
 
+In [bump-version](https://github.com/remorses/bump-version) github action i reduced the glob search time form 50 seconds down to 13 seconds
+
 ```
 npm i smart-glob
 ```
