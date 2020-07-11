@@ -4,7 +4,6 @@
     "version": "0.0.1",
     "description": "Smart glob that can ignore files",
     "main": "dist/index.js",
-    "module": "esm/index.js",
     "types": "dist/index.d.ts",
     "repository": {
         "url": "https://github.com/remorses/smart-glob"
