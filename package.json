@@ -2,7 +2,7 @@
     "name": "smart-glob",
     "_": "[bump]",
     "version": "0.0.1",
-    "description": "",
+    "description": "Smart glob that can ignore files",
     "main": "dist/index.js",
     "module": "esm/index.js",
     "types": "dist/index.d.ts",
