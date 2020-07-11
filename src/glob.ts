@@ -2,7 +2,7 @@ import { promises as fs, lstatSync, Stats } from 'fs'
 import globrex from 'globrex'
 import globalyzer from 'globalyzer'
 import { join, resolve, relative, basename } from 'path'
-
+import uniq from 'lodash.uniq'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 
 let CACHE = {}
@@ -91,6 +91,7 @@ export async function glob(str, opts: GlobOptions = {}): Promise<string[]> {
     if (gitignore) {
         ignore = [...ignore, ...(await getGlobsFromGit())]
     }
+    ignore= uniq(ignore)
 
     opts.cwd = opts.cwd || '.'
 
