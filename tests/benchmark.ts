@@ -41,7 +41,7 @@ describe('benchmarks', () => {
         benchmark('globby', () => {
             const files = globby.sync([glob], {
                 onlyFiles: true,
-                // gitignore: true,
+                gitignore: true,
                 ignore: ['node_modules'],
             })
             // console.log(files)
@@ -63,6 +63,7 @@ describe('benchmarks', () => {
         benchmark('smart-blog', async () => {
             const files = await myGlob(glob, {
                 filesOnly: true,
+                gitignore: true,
                 ignore: ['node_modules'],
             })
             // console.log(files)
