@@ -3,7 +3,6 @@ import globrex from 'globrex'
 import globalyzer from 'globalyzer'
 import { join, resolve, relative, basename } from 'path'
 
-
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 
 let CACHE = {}
@@ -61,6 +60,16 @@ async function walk(
     }
 }
 
+export type GlobOptions = {
+    cwd?: string
+    dot?: boolean
+    absolute?: boolean
+    filesOnly?: boolean
+    flush?: boolean
+    gitignore?: boolean
+    ignore?: string[]
+}
+
 /**
  * Find files using bash-like globbing.
  * All paths are normalized compared to node-glob.
@@ -73,19 +82,15 @@ async function walk(
  * @returns {Array} array containing matching files
  */
 
-export type GlobOptions = {
-    cwd?: string
-    dot?: boolean
-    absolute?: boolean
-    filesOnly?: boolean
-    flush?: boolean
-    ignore?: string[]
-}
-
 export async function glob(str, opts: GlobOptions = {}) {
     if (!str) return []
 
     let glob = globalyzer(str)
+
+    let { ignore = [], gitignore } = opts
+    if (gitignore) {
+        ignore = [...ignore, ...(await getGlobsFromGit())]
+    }
 
     opts.cwd = opts.cwd || '.'
 
@@ -113,7 +118,19 @@ export async function glob(str, opts: GlobOptions = {}) {
     })
 
     path.globstar = path.globstar.toString()
-    await walk(matches, glob.base, path, opts, '.', 0, opts.ignore)
+    await walk(matches, glob.base, path, opts, '.', 0, ignore)
 
     return opts.absolute ? matches.map((x) => resolve(opts.cwd, x)) : matches
+}
+
+export const getGlobsFromGit = async (data = '') => {
+    try {
+        data = data || (await fs.readFile('.gitignore', { encoding: 'utf8' }))
+        return data
+            .split('\n')
+            .filter((line) => !/^\s*$/.test(line) && !/^\s*#/.test(line))
+            .map((line) => line.trim().replace(/^\/+|\/+$/g, ''))
+    } catch (_a) {
+        return []
+    }
 }
