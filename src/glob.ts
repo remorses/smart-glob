@@ -82,7 +82,7 @@ export type GlobOptions = {
  * @returns {Array} array containing matching files
  */
 
-export async function glob(str, opts: GlobOptions = {}) {
+export async function glob(str, opts: GlobOptions = {}): Promise<string[]> {
     if (!str) return []
 
     let glob = globalyzer(str)
