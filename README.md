@@ -10,6 +10,18 @@ In [bump-version](https://github.com/remorses/bump-version) github action i redu
 npm i smart-glob
 ```
 
+## usage
+
+```js
+import { glob } from 'smart-glob'
+
+const files = await glob('**', {
+    gitignore: true, // add the ignore from the .gitignore in current path
+    filesOnly: true,
+    ignore: ['node_modules'],
+})
+```
+
 ## Benchmark
 
 Here is a benchmark with other globs solutions run on this package folder ignoring the `node_modules` directory
