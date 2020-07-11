@@ -83,7 +83,10 @@ export type GlobOptions = {
  * @returns {Array} array containing matching files
  */
 
-export async function glob(str, opts: GlobOptions = {}): Promise<string[]> {
+export async function glob(
+    str: string,
+    opts: GlobOptions = {},
+): Promise<string[]> {
     if (!str) return []
 
     let glob = globalyzer(str)
@@ -125,7 +128,7 @@ export async function glob(str, opts: GlobOptions = {}): Promise<string[]> {
     return opts.absolute ? matches.map((x) => resolve(opts.cwd, x)) : matches
 }
 
-export const memoizedGlob: typeof glob = memoize(glob, {
+export const memoizedGlob = memoize(glob, {
     promise: true,
     normalizer: (args) => {
         // args is arguments object as accessible in memoized function
