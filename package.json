@@ -5,6 +5,7 @@
     "description": "Smart glob that can ignore files",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "typings": "dist/index.d.ts",
     "repository": {
         "url": "https://github.com/remorses/smart-glob"
     },
