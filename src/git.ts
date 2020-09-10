@@ -53,6 +53,7 @@ export async function globWithGit(
         console.error(
             'could not use git to get globbed files, traversing fs tree',
         )
+        // TODO normal glob does not support ignoreGlobs
         return glob(str, opts)
     }
 }
