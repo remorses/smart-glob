@@ -1,4 +1,4 @@
-import { getGlobsFromGit } from '../src/glob'
+import { getGlobsFromGit as getGlobsFromGitignore, globWithGit } from '../src'
 import assert from 'assert'
 
 it('getGlobsFromGit', async () => {
@@ -10,10 +10,14 @@ it('getGlobsFromGit', async () => {
 
     xxx
     `
-    const files = await getGlobsFromGit(data)
+    const files = await getGlobsFromGitignore(data)
     console.log(files)
     assert(
         JSON.stringify(files) ===
             JSON.stringify(['file1', 'file2/xxx', 'file3', 'xxx']),
     )
+})
+it('globFromGit', async () => {
+    const paths = await globWithGit('./tests/**/*.js', {absolute: true})
+    console.log(paths)
 })

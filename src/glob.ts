@@ -122,6 +122,7 @@ export async function glob(
         extended: true,
     })
 
+    // @ts-ignore
     path.globstar = path.globstar.toString()
     await walk(matches, glob.base, path, opts, '.', 0, ignore)
 
