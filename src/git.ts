@@ -48,7 +48,8 @@ export async function globWithGit(
 }
 
 export async function gitPaths(cwd = '.'): Promise<string[]> {
-    let { stdout } = await exec(`git ls-files ${cwd}`, {
+    let { stdout } = await exec(`git ls-files`, {
+        cwd: path.resolve(cwd),
         maxBuffer: 1024 * 10000,
     })
     const paths = stdout
