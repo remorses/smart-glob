@@ -32,7 +32,9 @@ export async function globWithGit(
 
     let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
 
-    const ignoreRegexes = opts.ignoreGlobs.map((x) => {
+    const { ignoreGlobs = [] } = opts
+
+    const ignoreRegexes = ignoreGlobs.map((x) => {
         return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
     })
 
