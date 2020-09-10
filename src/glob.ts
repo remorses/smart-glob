@@ -2,7 +2,7 @@ import { promises as fs, lstatSync, Stats } from 'fs'
 import globrex from 'globrex'
 import globalyzer from 'globalyzer'
 import memoize from 'memoizee'
-import { join, resolve, relative, basename } from 'path'
+import { join, resolve, relative, basename, normalize } from 'path'
 import uniq from 'lodash.uniq'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 
@@ -98,6 +98,7 @@ export async function glob(
 ): Promise<string[]> {
     if (!str) return []
 
+    str = normalize(str)
     let glob = globalyzer(str)
 
     let { ignore = [], gitignore } = opts
