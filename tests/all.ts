@@ -25,7 +25,7 @@ it('globFromGit', async () => {
     console.log(paths)
 })
 it('normal glob', async () => {
-    const paths = await glob('tests/**/*.ts', {
+    const paths = await glob('./tests/**.ts', {
         absolute: true,
         ignoreGlobs: ['**/dir'],
     })
