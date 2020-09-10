@@ -5,6 +5,7 @@ import globalyzer from 'globalyzer'
 import { resolve } from 'path'
 import globrex from 'globrex'
 import path from 'path'
+import { cachedDataVersionTag } from 'v8'
 
 const GLOBREX_OPTIONS = {
     filepath: true,
@@ -12,39 +13,48 @@ const GLOBREX_OPTIONS = {
     extended: true,
 }
 
+type GitGlobOptions = Pick<GlobOptions, 'cwd' | 'absolute'> & {
+    ignoreGlobs?: string[]
+}
+
 export async function globWithGit(
     str: string,
-    opts: Pick<GlobOptions, 'cwd' | 'absolute'> & {
-        ignoreGlobs?: string[]
-    } = {},
+    opts: GitGlobOptions = {},
 ): Promise<string[]> {
-    if (!str) return []
-    str = path.normalize(str)
-    let glb = globalyzer(str)
+    try {
+        if (!str) return []
+        str = path.normalize(str)
+        let glb = globalyzer(str)
 
-    if (!glb.isGlob) {
-        return await glob(str, opts)
+        if (!glb.isGlob) {
+            return await glob(str, opts)
+        }
+
+        const paths = await gitPaths(resolve(opts.cwd || '.'))
+
+        const { path: globRegex } = globrex(str, GLOBREX_OPTIONS)
+
+        let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
+
+        const { ignoreGlobs = [] } = opts
+
+        const ignoreRegexes = ignoreGlobs.map((x) => {
+            return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
+        })
+
+        filteredPaths = filteredPaths.filter(
+            (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
+        )
+        if (opts.absolute) {
+            filteredPaths = filteredPaths.map((p) => resolve(p))
+        }
+        return filteredPaths
+    } catch {
+        console.error(
+            'could not use git to get globbed files, traversing fs tree',
+        )
+        return glob(str, opts)
     }
-
-    const paths = await gitPaths(resolve(opts.cwd || '.'))
-
-    const { path: globRegex } = globrex(str, GLOBREX_OPTIONS)
-
-    let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
-
-    const { ignoreGlobs = [] } = opts
-
-    const ignoreRegexes = ignoreGlobs.map((x) => {
-        return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
-    })
-
-    filteredPaths = filteredPaths.filter(
-        (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
-    )
-    if (opts.absolute) {
-        filteredPaths = filteredPaths.map((p) => resolve(p))
-    }
-    return filteredPaths
 }
 
 export async function gitPaths(cwd = '.'): Promise<string[]> {
