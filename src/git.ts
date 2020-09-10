@@ -26,6 +26,7 @@ export async function globWithGit(
         extended: true,
     })
 
+    
     let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
 
     if (opts.absolute) {
