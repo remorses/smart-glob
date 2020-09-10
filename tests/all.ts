@@ -1,4 +1,4 @@
-import { getGlobsFromGit as getGlobsFromGitignore, globWithGit } from '../src'
+import { getGlobsFromGit as getGlobsFromGitignore, globWithGit, glob } from '../src'
 import assert from 'assert'
 
 it('getGlobsFromGit', async () => {
@@ -19,6 +19,13 @@ it('getGlobsFromGit', async () => {
 })
 it('globFromGit', async () => {
     const paths = await globWithGit('./tests/**.ts', {
+        absolute: true,
+        ignoreGlobs: ['**/dir'],
+    })
+    console.log(paths)
+})
+it('globFromGit', async () => {
+    const paths = await glob('./tests/**.ts', {
         absolute: true,
         ignoreGlobs: ['**/dir'],
     })

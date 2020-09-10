@@ -16,6 +16,7 @@ async function walk(
     dirname = '',
     level = 0,
     ignore = [],
+    globsIgnore = [],
 ) {
     const rgx = lexer.segments[level]
     const dir = resolve(opts.cwd, prefix, dirname)
@@ -45,6 +46,12 @@ async function walk(
         if (ignore && ignore.includes(basename(relpath))) {
             continue
         }
+        if (
+            globsIgnore?.length &&
+            globsIgnore.some((toIgnore) => toIgnore.test(relpath))
+        ) {
+            continue
+        }
 
         if (rgx && !rgx.test(file)) continue
         !filesOnly && isMatch && output.push(join(prefix, relpath))
@@ -57,6 +64,7 @@ async function walk(
             relpath,
             rgx && rgx.toString() !== lexer.globstar && level + 1,
             ignore,
+            globsIgnore,
         )
     }
 }
@@ -69,6 +77,7 @@ export type GlobOptions = {
     flush?: boolean
     gitignore?: boolean
     ignore?: string[]
+    ignoreGlobs?: string[]
 }
 
 /**
@@ -124,7 +133,16 @@ export async function glob(
 
     // @ts-ignore
     path.globstar = path.globstar.toString()
-    await walk(matches, glob.base, path, opts, '.', 0, ignore)
+    const { ignoreGlobs = [] } = opts
+    const globsIgnore = ignoreGlobs.map((x) => {
+        return globrex(x, {
+            filepath: true,
+            globstar: true,
+            extended: true,
+            strict: true,
+        }).path.regex
+    })
+    await walk(matches, glob.base, path, opts, '.', 0, ignore, globsIgnore)
 
     return opts.absolute ? matches.map((x) => resolve(opts.cwd, x)) : matches
 }

@@ -13,9 +13,7 @@ const GLOBREX_OPTIONS = {
     extended: true,
 }
 
-type GitGlobOptions = Pick<GlobOptions, 'cwd' | 'absolute'> & {
-    ignoreGlobs?: string[]
-}
+type GitGlobOptions = Pick<GlobOptions, 'cwd' | 'absolute' | 'ignoreGlobs'>
 
 export async function globWithGit(
     str: string,
