@@ -6,9 +6,17 @@ import { resolve } from 'path'
 import globrex from 'globrex'
 import path from 'path'
 
+const GLOBREX_OPTIONS = {
+    filepath: true,
+    globstar: true,
+    extended: true,
+}
+
 export async function globWithGit(
     str: string,
-    opts: Pick<GlobOptions, 'cwd' | 'absolute'> = {},
+    opts: Pick<GlobOptions, 'cwd' | 'absolute'> & {
+        ignoreGlobs?: string[]
+    } = {},
 ): Promise<string[]> {
     if (!str) return []
     str = path.normalize(str)
@@ -20,18 +28,20 @@ export async function globWithGit(
 
     const paths = await gitPaths(resolve(opts.cwd || '.'))
 
-    const { path: globRegex } = globrex(str, {
-        filepath: true,
-        globstar: true,
-        extended: true,
-    })
+    const { path: globRegex } = globrex(str, GLOBREX_OPTIONS)
 
     let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
 
-    if (opts.absolute) {
-        return filteredPaths.map((p) => resolve(p))
-    }
+    const ignoreRegexes = opts.ignoreGlobs.map((x) => {
+        return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
+    })
 
+    filteredPaths = filteredPaths.filter(
+        (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
+    )
+    if (opts.absolute) {
+        filteredPaths = filteredPaths.map((p) => resolve(p))
+    }
     return filteredPaths
 }
 
