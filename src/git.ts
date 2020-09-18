@@ -46,9 +46,11 @@ export async function globWithGit(
             return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
         })
 
-        filteredPaths = filteredPaths.filter(
-            (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
-        )
+        if (ignoreRegexes?.length) {
+            filteredPaths = filteredPaths.filter(
+                (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
+            )
+        }
         if (opts.absolute) {
             debug(`making paths absolute`)
             filteredPaths = filteredPaths.map((p) => resolve(p))
