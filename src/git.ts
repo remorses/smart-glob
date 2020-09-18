@@ -6,6 +6,7 @@ import { resolve } from 'path'
 import globrex from 'globrex'
 import path from 'path'
 import { cachedDataVersionTag } from 'v8'
+import { debug } from './support'
 
 const GLOBREX_OPTIONS = {
     filepath: true,
@@ -28,14 +29,19 @@ export async function globWithGit(
             return await glob(str, opts)
         }
 
+        debug(`getting paths with git`)
         const paths = await gitPaths(resolve(opts.cwd || '.'))
 
         const { path: globRegex } = globrex(str, GLOBREX_OPTIONS)
+
+        debug(`using regex ${globRegex.regex}`)
+        debug(`starting filtering paths`)
 
         let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
 
         const { ignoreGlobs = [] } = opts
 
+        debug(`removing ignored paths`)
         const ignoreRegexes = ignoreGlobs.map((x) => {
             return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
         })
@@ -44,6 +50,7 @@ export async function globWithGit(
             (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
         )
         if (opts.absolute) {
+            debug(`making paths absolute`)
             filteredPaths = filteredPaths.map((p) => resolve(p))
         }
         return filteredPaths
@@ -51,7 +58,6 @@ export async function globWithGit(
         console.error(
             'could not use git to get globbed files, traversing fs tree',
         )
-        // TODO normal glob does not support ignoreGlobs
         return glob(str, opts)
     }
 }
