@@ -2,7 +2,6 @@ import { exec } from 'promisify-child-process'
 import { promises as fs, lstatSync, Stats } from 'fs'
 import { GlobOptions, glob } from './glob'
 import globalyzer from 'globalyzer'
-import { resolve } from 'path'
 import globrex from 'globrex'
 import path from 'path'
 import { cachedDataVersionTag } from 'v8'
@@ -32,7 +31,11 @@ export async function globWithGit(
         }
 
         debug(`getting paths with git`)
-        const paths = await gitPaths(resolve(opts.cwd || '.'), opts.gitFlags)
+        const cwd = path.resolve(opts.cwd || '.')
+        let paths = await gitPaths(cwd, opts.gitFlags)
+        if (path.isAbsolute(str)) {
+            paths = paths.map((p) => path.join(cwd, p))
+        }
 
         const { path: globRegex } = globrex(str, GLOBREX_OPTIONS)
 
@@ -55,7 +58,8 @@ export async function globWithGit(
         }
         if (opts.absolute) {
             debug(`making paths absolute`)
-            filteredPaths = filteredPaths.map((p) => resolve(p))
+            // filteredPaths = filteredPaths.map((p) => resolve(p))
+            filteredPaths = paths.map((p) => path.join(cwd, p))
         }
         return filteredPaths
     } catch {
