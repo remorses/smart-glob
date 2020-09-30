@@ -4,6 +4,8 @@
 
 This is useful when you want to ignore certain folders from being scanned like `node_modules`
 
+There is also a `globFromGit` that uses git cache to discover files in constant time
+
 In [bump-version](https://github.com/remorses/bump-version) github action i reduced the glob search time form 50 seconds down to 13 seconds
 
 ```
@@ -13,12 +15,17 @@ npm i smart-glob
 ## usage
 
 ```js
-import { glob } from 'smart-glob'
+import { glob, globFromGit } from 'smart-glob'
 
 const files = await glob('**', {
     gitignore: true, // add the ignore from the .gitignore in current path
     filesOnly: true,
     ignore: ['node_modules'],
+})
+
+const paths = await globWithGit(path.resolve('./tests/**.ts'), {
+    cwd: 'someFolder',
+    ignoreGlobs: ['**/dir'],
 })
 ```
 

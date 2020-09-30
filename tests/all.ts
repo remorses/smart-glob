@@ -33,6 +33,7 @@ it('globFromGit', async () => {
 it('globFromGit absolute base in glob', async () => {
     const paths = await globWithGit(path.resolve('./tests/**.ts'), {
         absolute: true,
+        
         ignoreGlobs: ['**/dir'],
     })
     assert.ok(paths.length)
