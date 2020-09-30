@@ -23,6 +23,7 @@ export async function globWithGit(
 ): Promise<string[]> {
     try {
         if (!str) return []
+        opts.absolute = opts.absolute ?? true
         str = path.normalize(str)
         let glb = globalyzer(str)
 
