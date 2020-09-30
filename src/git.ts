@@ -18,27 +18,27 @@ type GitGlobOptions = Pick<GlobOptions, 'cwd' | 'absolute' | 'ignoreGlobs'> & {
 }
 
 export async function globWithGit(
-    str: string,
+    globStr: string,
     opts: GitGlobOptions = {},
 ): Promise<string[]> {
     try {
-        if (!str) return []
+        if (!globStr) return []
         opts.absolute = opts.absolute ?? true
-        str = path.normalize(str)
-        let glb = globalyzer(str)
+        globStr = path.normalize(globStr)
+        let glb = globalyzer(globStr)
 
         if (!glb.isGlob) {
-            return await glob(str, opts)
+            return await glob(globStr, opts)
         }
 
         debug(`getting paths with git`)
         const cwd = path.resolve(opts.cwd || '.')
         let paths = await gitPaths(cwd, opts.gitFlags)
-        if (path.isAbsolute(str)) {
+        if (path.isAbsolute(globStr)) {
             paths = paths.map((p) => path.join(cwd, p))
         }
 
-        const { path: globRegex } = globrex(str, GLOBREX_OPTIONS)
+        const { path: globRegex } = globrex(globStr, GLOBREX_OPTIONS)
 
         debug(`using regex ${globRegex.regex}`)
         debug(`starting filtering paths`)
@@ -57,7 +57,7 @@ export async function globWithGit(
                 (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
             )
         }
-        if (opts.absolute && !path.isAbsolute(str)) {
+        if (opts.absolute && !path.isAbsolute(globStr)) {
             debug(`making paths absolute`)
             // filteredPaths = filteredPaths.map((p) => resolve(p))
             filteredPaths = paths.map((p) => path.join(cwd, p))
@@ -67,7 +67,7 @@ export async function globWithGit(
         console.error(
             'could not use git to get globbed files, traversing fs tree',
         )
-        return glob(str, opts)
+        return glob(globStr, opts)
     }
 }
 
