@@ -57,7 +57,7 @@ export async function globWithGit(
                 (x) => !ignoreRegexes.some((toIgnore) => toIgnore.test(x)),
             )
         }
-        if (opts.absolute) {
+        if (opts.absolute && !path.isAbsolute(str)) {
             debug(`making paths absolute`)
             // filteredPaths = filteredPaths.map((p) => resolve(p))
             filteredPaths = paths.map((p) => path.join(cwd, p))
