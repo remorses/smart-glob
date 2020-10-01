@@ -46,6 +46,6 @@ globby: 7.855ms
     ✓ globby
 glob: 391.656ms
     ✓ glob (392ms)
-smart-blog: 3.261ms
-    ✓ smart-blog
+smart-glob: 3.261ms
+    ✓ smart-glob
 ```

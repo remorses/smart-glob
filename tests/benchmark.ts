@@ -62,8 +62,8 @@ describe('benchmarks', () => {
         }),
     )
     it(
-        'smart-blog',
-        benchmark('smart-blog', async () => {
+        'smart-glob',
+        benchmark('smart-glob', async () => {
             const files = await myGlob(glob, {
                 filesOnly: true,
                 gitignore: true,
@@ -73,8 +73,8 @@ describe('benchmarks', () => {
         }),
     )
     it(
-        'smart-blog using git',
-        benchmark('smart-blog', async () => {
+        'smart-glob using git',
+        benchmark('smart-glob', async () => {
             const files = await globWithGit(glob, {
                 ignoreGlobs: ['**/node_modules/**'],
             })
