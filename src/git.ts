@@ -49,7 +49,7 @@ export async function globWithGit(
 
         debug(`removing ignored paths`)
         const ignoreRegexes = ignoreGlobs.map((x) => {
-            return globrex(x, { ...GLOBREX_OPTIONS, strict: true }).path.regex
+            return globrex(x, { ...GLOBREX_OPTIONS }).path.regex
         })
 
         if (ignoreRegexes?.length) {
@@ -60,7 +60,7 @@ export async function globWithGit(
         if (opts.absolute && !path.isAbsolute(globStr)) {
             debug(`making paths absolute`)
             // filteredPaths = filteredPaths.map((p) => resolve(p))
-            filteredPaths = paths.map((p) => path.join(cwd, p))
+            filteredPaths = filteredPaths.map((p) => path.join(cwd, p))
         }
         return filteredPaths
     } catch {
