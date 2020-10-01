@@ -1,4 +1,5 @@
 import { exec } from 'promisify-child-process'
+import difference from 'lodash/difference'
 import { promises as fs, lstatSync, Stats } from 'fs'
 import { GlobOptions, glob } from './glob'
 import globalyzer from 'globalyzer'
@@ -64,7 +65,7 @@ export async function globWithGit(
             filteredPaths = filteredPaths.map((p) => path.join(cwd, p))
         }
         if (!opts.absolute && path.isAbsolute(globStr)) {
-            debug(`making paths absolute`)
+            debug(`making paths relative`)
             // filteredPaths = filteredPaths.map((p) => resolve(p))
             filteredPaths = filteredPaths.map((p) => path.relative(cwd, p))
         }
@@ -85,11 +86,21 @@ export async function gitPaths(
         cwd: path.resolve(cwd),
         maxBuffer: 1024 * 10000,
     })
+    const paths = makeList(stdout.toString())
+    let { stdout: toRemove } = await exec(`git ls-files --deleted`, {
+        cwd: path.resolve(cwd),
+        maxBuffer: 1024 * 10000,
+    })
+    const pathsToRemove = makeList(toRemove.toString())
+
+    return difference(paths, pathsToRemove)
+}
+
+function makeList(stdout: string) {
     const paths = stdout
         .toString()
         .split('\n')
         .map((x) => x.trim())
         .filter(Boolean)
-
     return paths
 }
