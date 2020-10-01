@@ -7,7 +7,7 @@ import path from 'path'
 import { cachedDataVersionTag } from 'v8'
 import { debug } from './support'
 
-const GLOBREX_OPTIONS = {
+const GLOBREX_OPTIONS: globrex.Options = {
     filepath: true,
     globstar: true,
     extended: true,
@@ -28,6 +28,7 @@ export async function globWithGit(
         let glb = globalyzer(globStr)
 
         if (!glb.isGlob) {
+            debug(`not a glob, using normal globber`)
             return await glob(globStr, opts)
         }
 

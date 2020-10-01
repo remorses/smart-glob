@@ -1,17 +1,49 @@
-exports['globFromGit with ./tests/**.txt 1'] = []
-
-exports['globFromGit using **.txt 1'] = []
-
-exports['globFromGit absolute base in glob 1'] = [
-  "/Users/morse/Documents/GitHub/smartglob/tests/all.ts",
-  "/Users/morse/Documents/GitHub/smartglob/tests/benchmark.ts"
-]
-
-exports['normal glob 1'] = [
-  "/Users/morse/Documents/GitHub/smartglob/tests/all.ts",
-  "/Users/morse/Documents/GitHub/smartglob/tests/benchmark.ts"
-]
-
-exports['globFromGit using ./**.txt 1'] = []
-
 exports['globFromGit with ignore 1'] = []
+
+exports['globFromGit glob with \'./tests/**/*.txt\' 1'] = [
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/exampleFile.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/example/file.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob with \'tests/**/*.txt\' 1'] = [
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/exampleFile.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/example/file.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob with \'**/*.txt\' 1'] = [
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/exampleFile.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/example/file.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob with \'/Users/morse/Documents/GitHub/smartglob/tests/**/*.txt\' 1'] = [
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/exampleFile.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/example/file.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob relative paths with \'./tests/**/*.txt\' 1'] = [
+  "tests/dir/exampleFile.txt",
+  "tests/dir/subDir/example/file.txt",
+  "tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob relative paths with \'**/*.txt\' 1'] = [
+  "tests/dir/exampleFile.txt",
+  "tests/dir/subDir/example/file.txt",
+  "tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob relative paths with \'tests/**/*.txt\' 1'] = [
+  "tests/dir/exampleFile.txt",
+  "tests/dir/subDir/example/file.txt",
+  "tests/dir/subDir/file.txt"
+]
+
+exports['globFromGit glob relative paths with \'/Users/morse/Documents/GitHub/smartglob/tests/**/*.txt\' 1'] = [
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/exampleFile.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/example/file.txt",
+  "/Users/morse/Documents/GitHub/smartglob/tests/dir/subDir/file.txt"
+]
