@@ -5,6 +5,7 @@ import tinyGlob from 'tiny-glob'
 import { glob as myGlob, memoizedGlob } from '../src/glob'
 import path from 'path'
 import assert from 'assert'
+import { globWithGit } from '../src'
 
 const glob = './**'
 console.log(path.resolve(glob))
@@ -67,6 +68,15 @@ describe('benchmarks', () => {
                 filesOnly: true,
                 gitignore: true,
                 ignore: ['node_modules'],
+            })
+            // console.log(files)
+        }),
+    )
+    it(
+        'smart-blog using git',
+        benchmark('smart-blog', async () => {
+            const files = await globWithGit(glob, {
+                ignoreGlobs: ['**/node_modules/**'],
             })
             // console.log(files)
         }),
