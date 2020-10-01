@@ -23,7 +23,7 @@ export async function globWithGit(
 ): Promise<string[]> {
     try {
         if (!globStr) return []
-        opts.absolute = opts.absolute ?? true
+        // opts.absolute = opts.absolute ?? true
         globStr = path.normalize(globStr)
         let glb = globalyzer(globStr)
 
@@ -62,6 +62,11 @@ export async function globWithGit(
             debug(`making paths absolute`)
             // filteredPaths = filteredPaths.map((p) => resolve(p))
             filteredPaths = filteredPaths.map((p) => path.join(cwd, p))
+        }
+        if (!opts.absolute && path.isAbsolute(globStr)) {
+            debug(`making paths absolute`)
+            // filteredPaths = filteredPaths.map((p) => resolve(p))
+            filteredPaths = filteredPaths.map((p) => path.relative(cwd, p))
         }
         return filteredPaths
     } catch {
