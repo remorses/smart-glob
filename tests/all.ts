@@ -29,7 +29,7 @@ describe('globFromGit', () => {
         './tests/**/*.txt',
         '**/*.txt',
         'tests/**/*.txt',
-        path.resolve('tests/**/*.txt'),
+        // path.resolve('tests/**/*.txt'),
     ]
     // globs.forEach((str) => {
     //     it(`glob with '${str}'`, async () => {
