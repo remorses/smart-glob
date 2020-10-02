@@ -20,7 +20,6 @@
         "src",
         "esm"
     ],
-    
     "scripts": {
         "test": "NODE_ENV=test mocha --colors --exit",
         "compile": "sucrase -q ./src -d ./dist --transforms typescript,imports && chmod +x dist/bin.js",
@@ -38,6 +37,7 @@
         "@types/memoizee": "^0.4.4",
         "@types/mocha": "^7.0.2",
         "@types/node": "^14.0.22",
+        "@types/yargs": "^15.0.7",
         "assert": "^2.0.0",
         "dotenv": "^8.2.0",
         "fast-glob": "^3.2.4",
