@@ -55,6 +55,7 @@
         "lodash.uniq": "^4.5.0",
         "memoizee": "^0.4.14",
         "promisify-child-process": "^4.1.1",
-        "tslib": "^2.0.0"
+        "tslib": "^2.0.0",
+        "yargs": "^16.0.3"
     }
 }
