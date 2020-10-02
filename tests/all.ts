@@ -40,7 +40,11 @@ describe('globFromGit', () => {
     //     })
     // })
     globs.forEach((str) => {
-        it(`glob relative paths with '${str}'`, async () => {
+        it(`glob relative paths with '${
+            path.isAbsolute(str)
+                ? 'abs ' + path.relative(process.cwd(), str)
+                : str
+        }'`, async () => {
             const paths = await globWithGit(str, {
                 absolute: false,
                 ignoreGlobs: ['**/node_modules/**'],
