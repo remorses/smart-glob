@@ -6,6 +6,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "typings": "dist/index.d.ts",
+    "bin": "dist/bin.js",
     "repository": {
         "url": "https://github.com/remorses/smart-glob"
     },
@@ -19,7 +20,7 @@
         "src",
         "esm"
     ],
-    "bin": "dist/bin.js",
+    
     "scripts": {
         "test": "NODE_ENV=test mocha --colors --exit",
         "compile": "sucrase -q ./src -d ./dist --transforms typescript,imports && chmod +x dist/bin.js",
