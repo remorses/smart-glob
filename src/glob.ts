@@ -3,7 +3,7 @@ import globrex from 'globrex'
 import globalyzer from 'globalyzer'
 import memoize from 'memoizee'
 import { join, resolve, relative, basename, normalize } from 'path'
-import uniq from 'lodash.uniq'
+import uniq from 'lodash/uniq'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 
 let CACHE = {}
