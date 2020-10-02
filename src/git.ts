@@ -70,8 +70,9 @@ export async function globWithGit(
             filteredPaths = filteredPaths.map((p) => path.relative(cwd, p))
         }
         return filteredPaths
-    } catch {
+    } catch (e) {
         console.error(
+            e,
             'could not use git to get globbed files, traversing fs tree',
         )
         return glob(globStr, opts)
