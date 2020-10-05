@@ -84,7 +84,7 @@ export async function gitPaths(
     gitFlags = '--cached --others',
 ): Promise<string[]> {
     cwd = path.resolve(cwd)
-    const maxBuffer = 1024 * 10000
+    const maxBuffer = 1024 * 10000000
     let { stdout, stderr } = await exec(`git ls-files ${gitFlags}`, {
         cwd,
         maxBuffer,
