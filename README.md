@@ -17,12 +17,6 @@ npm i smart-glob
 ```js
 import { glob, globFromGit } from 'smart-glob'
 
-const files = await glob('**', {
-    gitignore: true, // add the ignore from the .gitignore in current path
-    filesOnly: true,
-    ignore: ['node_modules'],
-})
-
 const paths = await globWithGit(path.resolve('./tests/**.ts'), {
     cwd: './someFolder',
     // ignore patterns in gitignore
@@ -32,9 +26,22 @@ const paths = await globWithGit(path.resolve('./tests/**.ts'), {
     // ignore certain directories
     ignoreGlobs: ['**/dir/**'],
 })
+
+const files = await glob('**', {
+    gitignore: true, // add the ignore from the .gitignore in current path
+    filesOnly: true,
+    ignore: ['node_modules'],
+})
 ```
 
-## Benchmark
+## Cli
+
+```
+npm i -g smart-glob
+smart-glob './tests/**/*.tsx'
+```
+
+## Benchmark (without using git)
 
 Here is a benchmark with other globs solutions run on this package folder ignoring the `node_modules` directory
 
