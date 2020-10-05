@@ -12,7 +12,9 @@ yargs.command(
         if (!glb) {
             throw new Error('pass a glob as positional argument')
         }
-        const paths = await globWithGit(glb)
+        const paths = await globWithGit(glb, {
+            gitignore: true,
+        })
         console.info(paths.join('\n'))
         console.info(paths.length + ' files')
     },
