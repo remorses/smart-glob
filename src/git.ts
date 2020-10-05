@@ -89,7 +89,7 @@ export async function gitPaths(
         cwd,
         maxBuffer,
     })
-    console.error(stderr.toString())
+    // console.error(stderr.toString())
     const paths = makeList(stdout.toString())
     let { stdout: toRemove } = await exec(`git ls-files --deleted`, {
         cwd,
