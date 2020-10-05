@@ -12,7 +12,7 @@ In [bump-version](https://github.com/remorses/bump-version) github action i redu
 npm i smart-glob
 ```
 
-## usage
+## Usage
 
 ```js
 import { glob, globFromGit } from 'smart-glob'
