@@ -14,7 +14,10 @@ const GLOBREX_OPTIONS: globrex.Options = {
     extended: true,
 }
 
-type GitGlobOptions = Pick<GlobOptions, 'cwd' | 'absolute' | 'ignoreGlobs'> & {
+type GitGlobOptions = Pick<
+    GlobOptions,
+    'cwd' | 'absolute' | 'ignoreGlobs' | 'gitignore'
+> & {
     gitFlags?: string
 }
 
@@ -35,7 +38,11 @@ export async function globWithGit(
 
         debug(`getting paths with git`)
         const cwd = path.resolve(opts.cwd || '.')
-        let paths = await gitPaths(cwd, opts.gitFlags)
+        let paths = await gitPaths({
+            cwd,
+            gitFlags: opts.gitFlags,
+            gitignore: opts.gitignore,
+        })
         if (path.isAbsolute(globStr)) {
             paths = paths.map((p) => path.join(cwd, p))
         }
@@ -79,10 +86,14 @@ export async function globWithGit(
     }
 }
 
-export async function gitPaths(
+export async function gitPaths({
     cwd = '.',
     gitFlags = '--cached --others',
-): Promise<string[]> {
+    gitignore = false,
+}): Promise<string[]> {
+    if (gitignore) {
+        gitFlags = gitFlags + ' --exclude-standard'
+    }
     cwd = path.resolve(cwd)
     const maxBuffer = 1024 * 10000000
     let { stdout, stderr } = await exec(`git ls-files ${gitFlags}`, {

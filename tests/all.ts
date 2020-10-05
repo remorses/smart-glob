@@ -62,3 +62,12 @@ it('globFromGit with ignore', async () => {
     assert.strictEqual(paths.length, 0)
     snapshot(paths)
 })
+
+it('globFromGit with gitignore', async () => {
+    const paths = await globWithGit('**/node_modules/**', {
+        absolute: false,
+        gitignore: true,
+    })
+    assert.strictEqual(paths.length, 0)
+    snapshot(paths)
+})
