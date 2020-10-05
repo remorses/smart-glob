@@ -72,11 +72,14 @@ async function walk(
 export type GlobOptions = {
     cwd?: string
     dot?: boolean
+    // convert output paths to absolute paths
     absolute?: boolean
     filesOnly?: boolean
     flush?: boolean
+    // ignore patterns in .gitignore
     gitignore?: boolean
     ignore?: string[]
+    // ignore additional patters
     ignoreGlobs?: string[]
 }
 

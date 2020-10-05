@@ -24,8 +24,13 @@ const files = await glob('**', {
 })
 
 const paths = await globWithGit(path.resolve('./tests/**.ts'), {
-    cwd: 'someFolder',
-    ignoreGlobs: ['**/dir'],
+    cwd: './someFolder',
+    // ignore patterns in gitignore
+    gitignore: true,
+    // output paths are absolute paths
+    absolute: true,
+    // ignore certain directories
+    ignoreGlobs: ['**/dir/**'],
 })
 ```
 
