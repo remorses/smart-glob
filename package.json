@@ -21,7 +21,7 @@
         "esm"
     ],
     "scripts": {
-        "test": "NODE_ENV=test mocha --colors --exit",
+        "test": "cross-env NODE_ENV=test mocha --colors --exit",
         "compile": "sucrase -q ./src -d ./dist --transforms typescript,imports && chmod +x dist/bin.js",
         "dev": "yarn compile && node dist",
         "cli": "yarn compile && node dist/bin.js"
@@ -39,6 +39,7 @@
         "@types/node": "^14.0.22",
         "@types/yargs": "^15.0.7",
         "assert": "^2.0.0",
+        "cross-env": "^7.0.2",
         "dotenv": "^8.2.0",
         "fast-glob": "^3.2.4",
         "glob": "^7.1.6",

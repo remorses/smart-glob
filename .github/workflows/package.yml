@@ -21,11 +21,13 @@ jobs:
             - run: yarn test
             - run: tsc
             - name: Bump version
+              if: matrix.os == 'ubuntu-latest'
               uses: remorses/bump-version@js
               with:
                   version_file: VERSION
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             - run: yarn publish
+              if: matrix.os == 'ubuntu-latest'
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
