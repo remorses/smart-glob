@@ -45,7 +45,7 @@ describe('globFromGit', () => {
                 ? 'abs ' + path.relative(process.cwd(), str)
                 : str
         }'`, async () => {
-            const paths = await globWithGit(str, {
+            const paths = await globWithGit(path.normalize(str), {
                 absolute: false,
                 ignoreGlobs: ['**/node_modules/**'],
             })
