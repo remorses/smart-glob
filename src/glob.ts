@@ -6,6 +6,7 @@ import memoize from 'memoizee'
 import { join, resolve, relative, basename, normalize } from 'path'
 import path from 'path'
 import uniq from 'lodash/uniq'
+import { GLOBREX_OPTIONS } from './support'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 
 let CACHE = {}
@@ -134,9 +135,7 @@ export async function glob(
 
     let matches = []
     const { path: globrexPath } = globrex(glob.glob, {
-        filepath: true,
-        globstar: true,
-        extended: true,
+        ...GLOBREX_OPTIONS,
     })
     // @ts-ignore
     globrexPath.globstar = globrexPath.globstar.toString()
@@ -144,10 +143,7 @@ export async function glob(
     const { ignoreGlobs = [] } = opts
     const globsIgnore = ignoreGlobs.map((x) => {
         return globrex(x, {
-            filepath: true,
-            globstar: true,
-            extended: true,
-            strict: true,
+            ...GLOBREX_OPTIONS,
         }).path.regex
     })
 

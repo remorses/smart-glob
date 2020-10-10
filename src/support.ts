@@ -3,3 +3,9 @@ export const debug = (x) => {
         console.log('[DEBUG smart-glob]', x)
     }
 }
+
+export const GLOBREX_OPTIONS: globrex.Options = {
+    filepath: true,
+    globstar: true,
+    extended: true,
+}
