@@ -10,8 +10,6 @@ import toUnixPath from 'slash'
 import { cachedDataVersionTag } from 'v8'
 import { debug, GLOBREX_OPTIONS } from './support'
 
-
-
 type GitGlobOptions = Pick<
     GlobOptions,
     'cwd' | 'absolute' | 'ignoreGlobs' | 'gitignore' | 'alwaysReturnUnixPaths'
@@ -91,7 +89,7 @@ export async function globWithGit(
             e,
             'could not use git to get globbed files, traversing fs tree',
         )
-        return glob(globStr, opts)
+        return glob(globStr, { ...opts, filesOnly: true })
         const paths = await fastGlob(globStr, {
             absolute: opts.absolute,
             cwd: opts.cwd,
