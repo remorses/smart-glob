@@ -10,7 +10,9 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest]
+                os: 
+                    - windows-latest
+                    # - ubuntu-latest
         steps:
             - uses: actions/checkout@v1
             - uses: actions/setup-node@v1
@@ -19,16 +21,16 @@ jobs:
                   registry-url: https://registry.npmjs.org/
             - run: yarn
             - run: git ls-files
-            - run: yarn test
             - run: tsc
-            - name: Bump version
-              if: matrix.os == 'ubuntu-latest'
-              uses: remorses/bump-version@js
-              with:
-                  version_file: VERSION
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            - run: yarn publish
-              if: matrix.os == 'ubuntu-latest'
-              env:
-                  NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+            - run: yarn test
+            # - name: Bump version
+            #   if: matrix.os == 'ubuntu-latest'
+            #   uses: remorses/bump-version@js
+            #   with:
+            #       version_file: VERSION
+            #   env:
+            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            # - run: yarn publish
+            #   if: matrix.os == 'ubuntu-latest'
+            #   env:
+            #       NODE_AUTH_TOKEN: ${{ secrets.npm_token }}

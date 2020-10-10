@@ -163,7 +163,7 @@ export const getGlobsFromGit = async (data = '') => {
     try {
         data = data || (await fs.readFile('.gitignore', { encoding: 'utf8' }))
         return data
-            .split('\n')
+            .split(/\r?\n/)
             .filter((line) => !/^\s*$/.test(line) && !/^\s*#/.test(line))
             .map((line) => line.trim().replace(/^\/+|\/+$/g, ''))
     } catch (_a) {

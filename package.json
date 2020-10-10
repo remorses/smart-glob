@@ -56,6 +56,7 @@
         "lodash": "^4.17.20",
         "memoizee": "^0.4.14",
         "promisify-child-process": "^4.1.1",
+        "slash": "^3.0.0",
         "tslib": "^2.0.0",
         "yargs": "^16.0.3"
     }

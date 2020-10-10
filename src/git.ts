@@ -5,6 +5,7 @@ import { GlobOptions, glob } from './glob'
 import globalyzer from 'globalyzer'
 import globrex from 'globrex'
 import path from 'path'
+import toUnixPath from 'slash'
 import { cachedDataVersionTag } from 'v8'
 import { debug } from './support'
 
@@ -38,6 +39,7 @@ export async function globWithGit(
 
         debug(`getting paths with git`)
         const cwd = path.resolve(opts.cwd || '.')
+        // TODO replace slashes in windows
         let paths = await gitPaths({
             cwd,
             gitFlags: opts.gitFlags,
@@ -47,18 +49,22 @@ export async function globWithGit(
             paths = paths.map((p) => path.join(cwd, p))
         }
 
-        const { path: globRegex } = globrex(globStr, GLOBREX_OPTIONS)
+        const { regex: globRegex } = globrex(
+            toUnixPath(globStr),
+            GLOBREX_OPTIONS,
+        )
 
-        debug(`using regex ${globRegex.regex}`)
+        debug(`using regex ${globRegex}`)
         debug(`starting filtering paths`)
 
-        let filteredPaths = paths.filter((p) => globRegex.regex.test(p))
+        let filteredPaths = paths.filter((p) => globRegex.test(p))
 
         const { ignoreGlobs = [] } = opts
 
         debug(`removing ignored paths`)
         const ignoreRegexes = ignoreGlobs.map((x) => {
-            return globrex(x, { ...GLOBREX_OPTIONS }).path.regex
+            x = toUnixPath(x)
+            return globrex(x, { ...GLOBREX_OPTIONS }).regex
         })
 
         if (ignoreRegexes?.length) {
@@ -114,7 +120,7 @@ export async function gitPaths({
 function makeList(stdout: string) {
     const paths = stdout
         .toString()
-        .split('\n')
+        .split(/\r?\n/)
         .map((x) => x.trim())
         .filter(Boolean)
     return paths
