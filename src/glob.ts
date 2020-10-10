@@ -105,11 +105,12 @@ export async function glob(
     if (!str) return []
 
     str = normalize(str)
+    str = toUnixPath(str)
     let glob = globalyzer(str)
 
     let { ignore = [], gitignore } = opts
     if (gitignore) {
-        ignore = [...ignore, ...(await getGlobsFromGit())]
+        ignore = [...ignore, ...(await getGlobsFromGitignore())]
     }
     ignore = uniq(ignore)
 
@@ -137,6 +138,8 @@ export async function glob(
         globstar: true,
         extended: true,
     })
+    // @ts-ignore
+    path.globstar = globrexPath.globstar.toString()
 
     const { ignoreGlobs = [] } = opts
     const globsIgnore = ignoreGlobs.map((x) => {
@@ -176,7 +179,7 @@ export const memoizedGlob = memoize(glob, {
     },
 })
 
-export const getGlobsFromGit = async (data = '') => {
+export const getGlobsFromGitignore = async (data = '') => {
     try {
         data = data || (await fs.readFile('.gitignore', { encoding: 'utf8' }))
         return data
