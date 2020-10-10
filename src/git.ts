@@ -65,7 +65,7 @@ export async function globWithGit(
         debug(`removing ignored paths`)
         const ignoreRegexes = ignoreGlobs.map((x) => {
             x = toUnixPath(x)
-            return globrex(x, { ...GLOBREX_OPTIONS }).regex
+            return globrex(x, { ...GLOBREX_OPTIONS }).path.regex
         })
 
         if (ignoreRegexes?.length) {

@@ -6,8 +6,9 @@ import {
 import assert from 'assert'
 import snapshot from 'snap-shot-it'
 import path from 'path'
+import toUnixPath from 'slash'
 
-it('getGlobsFromGit', async () => {
+it('getGlobsFromGitignore', async () => {
     const data = `
     file1/
     file2/xxx
@@ -29,7 +30,7 @@ describe('globFromGit', () => {
         './tests/**/*.txt',
         '**/*.txt',
         'tests/**/*.txt',
-        path.resolve('tests/**/*.txt'),
+        toUnixPath(path.resolve('tests/**/*.txt')),
     ]
     // globs.forEach((str) => {
     //     it(`glob with '${str}'`, async () => {
@@ -40,11 +41,11 @@ describe('globFromGit', () => {
     //     })
     // })
     globs.forEach((str) => {
-        it(`glob relative paths with '${
+        it(`glob relative paths with '${toUnixPath(
             path.isAbsolute(str)
                 ? 'abs ' + path.relative(process.cwd(), str)
-                : str
-        }'`, async () => {
+                : str,
+        )}'`, async () => {
             const paths = await globWithGit(path.normalize(str), {
                 absolute: false,
                 ignoreGlobs: ['**/node_modules/**'],
