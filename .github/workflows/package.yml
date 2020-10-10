@@ -10,9 +10,9 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                os: 
+                os:
                     - windows-latest
-                    # - ubuntu-latest
+                    - ubuntu-latest
         steps:
             - uses: actions/checkout@v1
             - uses: actions/setup-node@v1
@@ -23,14 +23,14 @@ jobs:
             - run: git ls-files
             - run: tsc
             - run: yarn test
-            # - name: Bump version
-            #   if: matrix.os == 'ubuntu-latest'
-            #   uses: remorses/bump-version@js
-            #   with:
-            #       version_file: VERSION
-            #   env:
-            #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            # - run: yarn publish
-            #   if: matrix.os == 'ubuntu-latest'
-            #   env:
-            #       NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+            - name: Bump version
+              if: matrix.os == 'ubuntu-latest'
+              uses: remorses/bump-version@js
+              with:
+                  version_file: VERSION
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - run: yarn publish
+              if: matrix.os == 'ubuntu-latest'
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
