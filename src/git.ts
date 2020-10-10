@@ -49,9 +49,11 @@ export async function globWithGit(
             paths = paths.map((p) => path.join(cwd, p))
         }
 
+        globStr = toUnixPath(globStr)
+        debug({globStr})
         const {
             path: { regex: globRegex },
-        } = globrex(toUnixPath(globStr), GLOBREX_OPTIONS)
+        } = globrex(globStr, GLOBREX_OPTIONS)
 
         debug(`using regex ${globRegex}`)
         debug(`starting filtering paths`)
