@@ -1,10 +1,10 @@
 # smart-glob
 
-`smart-glob` is the only nodejs glob searcher that does not recurse inside every directory it finds
+`smart-glob`  exports 2 functions
+- `globWithGit` uses the git cache to search for files, the search time should be constant (around 40ms)
+- `glob` does a normal glob search, it also can ignore directories in the `ignore` field
 
-This is useful when you want to ignore certain folders from being scanned like `node_modules`
-
-There is also a `globFromGit` that uses git cache to discover files in constant time, it takes on average 50ms on any code base
+Both functions are tested in unix and windows environments (in windows return paths with `\\` delimiter unless `alwaysReturnUnixPaths` is provided)
 
 In [bump-version](https://github.com/remorses/bump-version) github action i reduced the glob search time form 50 seconds down to 13 seconds using `glob` and to 0.5 seconds using `globWithGit`
 
@@ -15,7 +15,7 @@ npm i smart-glob
 ## Usage
 
 ```js
-import { glob, globFromGit } from 'smart-glob'
+import { glob, globWithGit } from 'smart-glob'
 
 const paths = await globWithGit(path.resolve('./tests/**.ts'), {
     cwd: './someFolder',
@@ -61,3 +61,5 @@ glob: 391.656ms
 smart-glob: 3.261ms
     ✓ smart-glob
 ```
+
+And then there is `globWithGit` which takes always 40ms, no matter how many files there are 😛
