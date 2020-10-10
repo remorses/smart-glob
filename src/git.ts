@@ -5,7 +5,7 @@ import { GlobOptions, glob } from './glob'
 import globalyzer from 'globalyzer'
 import globrex from 'globrex'
 import path from 'path'
-import fastGlob from 'fast-glob'
+// import fastGlob from 'fast-glob'
 import toUnixPath from 'slash'
 import { cachedDataVersionTag } from 'v8'
 import { debug, GLOBREX_OPTIONS } from './support'
@@ -90,18 +90,18 @@ export async function globWithGit(
             'could not use git to get globbed files, traversing fs tree',
         )
         return glob(globStr, { ...opts, filesOnly: true })
-        const paths = await fastGlob(globStr, {
-            absolute: opts.absolute,
-            cwd: opts.cwd,
-            globstar: true,
-            onlyFiles: true,
-            ignore: opts.ignoreGlobs,
-            ...opts,
-        })
-        if (opts.alwaysReturnUnixPaths) {
-            return paths.map(toUnixPath)
-        }
-        return paths
+        // const paths = await fastGlob(globStr, {
+        //     absolute: opts.absolute,
+        //     cwd: opts.cwd,
+        //     globstar: true,
+        //     onlyFiles: true,
+        //     ignore: opts.ignoreGlobs,
+        //     ...opts,
+        // })
+        // if (opts.alwaysReturnUnixPaths) {
+        //     return paths.map(toUnixPath)
+        // }
+        // return paths
     }
 }
 
