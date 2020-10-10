@@ -1,8 +1,10 @@
 import { promises as fs, lstatSync, Stats } from 'fs'
+import toUnixPath from 'slash'
 import globrex from 'globrex'
 import globalyzer from 'globalyzer'
 import memoize from 'memoizee'
 import { join, resolve, relative, basename, normalize } from 'path'
+import path from 'path'
 import uniq from 'lodash/uniq'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 
@@ -78,6 +80,7 @@ export type GlobOptions = {
     flush?: boolean
     // ignore patterns in .gitignore
     gitignore?: boolean
+    alwaysReturnUnixPaths?: boolean
     ignore?: string[]
     // ignore additional patters
     ignoreGlobs?: string[]
@@ -129,14 +132,12 @@ export async function glob(
     if (opts.flush) CACHE = {}
 
     let matches = []
-    const { path } = globrex(glob.glob, {
+    const { path: globrexPath } = globrex(glob.glob, {
         filepath: true,
         globstar: true,
         extended: true,
     })
 
-    // @ts-ignore
-    path.globstar = path.globstar.toString()
     const { ignoreGlobs = [] } = opts
     const globsIgnore = ignoreGlobs.map((x) => {
         return globrex(x, {
@@ -146,9 +147,25 @@ export async function glob(
             strict: true,
         }).path.regex
     })
-    await walk(matches, glob.base, path, opts, '.', 0, ignore, globsIgnore)
 
-    return opts.absolute ? matches.map((x) => resolve(opts.cwd, x)) : matches
+    await walk(
+        matches,
+        glob.base,
+        globrexPath,
+        opts,
+        '.',
+        0,
+        ignore,
+        globsIgnore,
+    )
+
+    if (opts.absolute) {
+        matches = matches.map((x) => path.join(opts.cwd, x))
+    }
+    if (opts.alwaysReturnUnixPaths) {
+        matches = matches.map(toUnixPath)
+    }
+    return matches
 }
 
 export const memoizedGlob = memoize(glob, {

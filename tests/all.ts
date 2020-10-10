@@ -48,6 +48,7 @@ describe('globFromGit', () => {
         )}'`, async () => {
             const paths = await globWithGit(path.normalize(str), {
                 absolute: false,
+                alwaysReturnUnixPaths: true,
                 ignoreGlobs: ['**/node_modules/**'],
             })
             snapshot(paths)
@@ -58,6 +59,7 @@ describe('globFromGit', () => {
 it('globFromGit with ignore', async () => {
     const paths = await globWithGit('./tests/**/*.txt', {
         absolute: false,
+        alwaysReturnUnixPaths: true,
         ignoreGlobs: ['**/node_modules/**', '**/dir/**'],
     })
     assert.strictEqual(paths.length, 0)
@@ -68,6 +70,7 @@ it('globFromGit with gitignore', async () => {
     const paths = await globWithGit('**/node_modules/**', {
         absolute: false,
         gitignore: true,
+        alwaysReturnUnixPaths: true,
     })
     assert.strictEqual(paths.length, 0)
     snapshot(paths)

@@ -17,9 +17,10 @@ const GLOBREX_OPTIONS: globrex.Options = {
 
 type GitGlobOptions = Pick<
     GlobOptions,
-    'cwd' | 'absolute' | 'ignoreGlobs' | 'gitignore'
+    'cwd' | 'absolute' | 'ignoreGlobs' | 'gitignore' | 'alwaysReturnUnixPaths'
 > & {
     gitFlags?: string
+    
 }
 
 export async function globWithGit(
@@ -83,6 +84,10 @@ export async function globWithGit(
             // filteredPaths = filteredPaths.map((p) => resolve(p))
             filteredPaths = filteredPaths.map((p) => path.relative(cwd, p))
         }
+        if (opts.alwaysReturnUnixPaths) {
+            return filteredPaths.map(toUnixPath)
+        }
+
         return filteredPaths
     } catch (e) {
         console.error(
