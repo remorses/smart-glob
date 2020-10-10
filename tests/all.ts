@@ -67,7 +67,7 @@ describe('glob normal', () => {
         )}'`, async () => {
             const paths = await glob(str, {
                 absolute: false,
-                // alwaysReturnUnixPaths: true,
+                alwaysReturnUnixPaths: true,
                 ignoreGlobs: ['**/node_modules/**'],
             })
             snapshot(paths)
