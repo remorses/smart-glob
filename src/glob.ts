@@ -139,7 +139,7 @@ export async function glob(
         extended: true,
     })
     // @ts-ignore
-    path.globstar = globrexPath.globstar.toString()
+    globrexPath.globstar = globrexPath.globstar.toString()
 
     const { ignoreGlobs = [] } = opts
     const globsIgnore = ignoreGlobs.map((x) => {
