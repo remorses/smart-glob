@@ -49,10 +49,9 @@ export async function globWithGit(
             paths = paths.map((p) => path.join(cwd, p))
         }
 
-        const { regex: globRegex } = globrex(
-            toUnixPath(globStr),
-            GLOBREX_OPTIONS,
-        )
+        const {
+            path: { regex: globRegex },
+        } = globrex(toUnixPath(globStr), GLOBREX_OPTIONS)
 
         debug(`using regex ${globRegex}`)
         debug(`starting filtering paths`)
@@ -92,6 +91,8 @@ export async function globWithGit(
     }
 }
 
+// get paths with git, paths are always relative to cwd
+// in windows paths use the \\ path delimiter
 export async function gitPaths({
     cwd = '.',
     gitFlags = '--cached --others',
@@ -114,7 +115,9 @@ export async function gitPaths({
     })
     const pathsToRemove = makeList(toRemove.toString())
 
-    return difference(paths, pathsToRemove)
+    const resultPaths = difference(paths, pathsToRemove).map(path.normalize)
+    debug(resultPaths.slice(0, 5) + '...')
+    return resultPaths
 }
 
 function makeList(stdout: string) {
