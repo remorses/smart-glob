@@ -117,16 +117,19 @@ export async function gitPaths({
     }
     cwd = path.resolve(cwd)
     const maxBuffer = 1024 * 10000000
-    let { stdout, stderr } = await exec(`git ls-files ${gitFlags}`, {
-        cwd,
-        maxBuffer,
-    })
+    let [{ stdout }, { stdout: toRemove }] = await Promise.all([
+        exec(`git ls-files ${gitFlags}`, {
+            cwd,
+            maxBuffer,
+        }),
+        exec(`git ls-files --deleted`, {
+            cwd,
+            maxBuffer,
+        }),
+    ])
     // console.error(stderr.toString())
     const paths = makeList(stdout.toString())
-    let { stdout: toRemove } = await exec(`git ls-files --deleted`, {
-        cwd,
-        maxBuffer,
-    })
+
     const pathsToRemove = makeList(toRemove.toString())
 
     const resultPaths = difference(paths, pathsToRemove).map(path.normalize)

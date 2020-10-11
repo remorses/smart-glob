@@ -18,6 +18,7 @@ const benchmark = (name: string, f) => async () => {
 }
 
 describe('benchmarks', () => {
+    process.env.DEBUG = ''
     it(
         'tiny-glob',
         benchmark('tiny-glob', async () => {
@@ -74,7 +75,7 @@ describe('benchmarks', () => {
     )
     it(
         'smart-glob using git',
-        benchmark('smart-glob', async () => {
+        benchmark('smart-glob using git', async () => {
             const files = await globWithGit(glob, {
                 ignoreGlobs: ['**/node_modules/**'],
             })
