@@ -1,11 +1,10 @@
 import fs, { lstatSync, Stats } from 'fs'
-import toUnixPath from 'slash'
-import globrex from 'globrex'
 import globalyzer from 'globalyzer'
-import memoize from 'memoizee'
-import { join, resolve, relative, basename, normalize } from 'path'
-import path from 'path'
+import globrex from 'globrex'
 import uniq from 'lodash/uniq'
+import memoize from 'memoizee'
+import path, { basename, join, normalize, relative, resolve } from 'path'
+import toUnixPath from 'slash'
 import { GLOBREX_OPTIONS } from './support'
 const isHidden = /(^|[\\\/])\.[^\\\/\.]/g
 

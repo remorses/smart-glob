@@ -2,10 +2,15 @@ import fastGlob from 'fast-glob'
 import globby from 'globby'
 import globber from 'glob'
 import tinyGlob from 'tiny-glob'
-import { glob as myGlob, globSync as myGlobSync, memoizedGlob } from '../src/glob'
+import {
+    glob as myGlob,
+    globSync as myGlobSync,
+    memoizedGlob,
+} from '../src/glob'
 import path from 'path'
 import assert from 'assert'
-import { globWithGit, globWithGitSync } from '../src'
+import { globWithGit } from '../src'
+import { globWithGitSync } from '../src/experimental'
 
 const glob = './**'
 console.log(path.resolve(glob))
@@ -66,7 +71,6 @@ describe('benchmarks', () => {
         'smart-glob',
         benchmark('smart-glob', async () => {
             const files = await myGlob(glob, {
-                filesOnly: true,
                 gitignore: true,
                 ignore: ['node_modules'],
             })
@@ -77,7 +81,6 @@ describe('benchmarks', () => {
         'smart-glob sync',
         benchmark('smart-glob sync', async () => {
             const files = await myGlobSync(glob, {
-                filesOnly: true,
                 gitignore: true,
                 ignore: ['node_modules'],
             })
@@ -108,6 +111,6 @@ describe('smart-glob', () => {
     it('second run is faster', async () => {
         const files1 = await benchmark('1', () => memoizedGlob('**'))()
         const files2 = await benchmark('1', () => memoizedGlob('**'))()
-        assert.equal(files1.length, files2.length)
+        assert.strictEqual(files1.length, files2.length)
     })
 })

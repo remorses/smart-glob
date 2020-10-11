@@ -1,15 +1,12 @@
-import { exec } from 'promisify-child-process'
-import difference from 'lodash/difference'
-import { promises as fs, lstatSync, Stats } from 'fs'
-import { GlobOptions, glob, globSync } from './glob'
-import globalyzer from 'globalyzer'
+import { execSync } from 'child_process'
 import globrex from 'globrex'
+import difference from 'lodash/difference'
 import path from 'path'
+import { exec } from 'promisify-child-process'
 // import fastGlob from 'fast-glob'
 import toUnixPath from 'slash'
-import { cachedDataVersionTag } from 'v8'
+import { glob, GlobOptions, globSync } from './glob'
 import { debug, GLOBREX_OPTIONS } from './support'
-import { execSync } from 'child_process'
 
 type GitGlobOptions = Pick<
     GlobOptions,

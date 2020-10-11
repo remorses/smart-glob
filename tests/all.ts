@@ -1,10 +1,6 @@
-import {
-    getGlobsFromGitignore,
-    globWithGit,
-    glob,
-    globSync,
-    globWithGitSync,
-} from '../src'
+import { globWithGit, glob } from '../src'
+import { getGlobsFromGitignore } from '../src/glob'
+import { globSync, globWithGitSync } from '../src/experimental'
 import assert from 'assert'
 import snapshot from 'snap-shot-it'
 import path from 'path'
