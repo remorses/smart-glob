@@ -2,10 +2,10 @@ import fastGlob from 'fast-glob'
 import globby from 'globby'
 import globber from 'glob'
 import tinyGlob from 'tiny-glob'
-import { glob as myGlob, memoizedGlob } from '../src/glob'
+import { glob as myGlob, globSync as myGlobSync, memoizedGlob } from '../src/glob'
 import path from 'path'
 import assert from 'assert'
-import { globWithGit } from '../src'
+import { globWithGit, globWithGitSync } from '../src'
 
 const glob = './**'
 console.log(path.resolve(glob))
@@ -74,9 +74,29 @@ describe('benchmarks', () => {
         }),
     )
     it(
+        'smart-glob sync',
+        benchmark('smart-glob sync', async () => {
+            const files = await myGlobSync(glob, {
+                filesOnly: true,
+                gitignore: true,
+                ignore: ['node_modules'],
+            })
+            // console.log(files)
+        }),
+    )
+    it(
         'smart-glob using git',
         benchmark('smart-glob using git', async () => {
             const files = await globWithGit(glob, {
+                ignoreGlobs: ['**/node_modules/**'],
+            })
+            // console.log(files)
+        }),
+    )
+    it(
+        'smart-glob using git and sync',
+        benchmark('smart-glob using git and sync', async () => {
+            const files = await globWithGitSync(glob, {
                 ignoreGlobs: ['**/node_modules/**'],
             })
             // console.log(files)

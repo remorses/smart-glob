@@ -1,4 +1,10 @@
-import { getGlobsFromGitignore, globWithGit, glob } from '../src'
+import {
+    getGlobsFromGitignore,
+    globWithGit,
+    glob,
+    globSync,
+    globWithGitSync,
+} from '../src'
 import assert from 'assert'
 import snapshot from 'snap-shot-it'
 import path from 'path'
@@ -21,28 +27,34 @@ it('getGlobsFromGitignore', async () => {
     )
 })
 
-describe('globFromGit', () => {
+describe('globWithGit', () => {
     const globs = [
         './tests/**/*.txt',
         '**/*.txt',
         'tests/**/*.txt',
         toUnixPath(path.resolve('tests/**/*.txt')),
     ]
-    // globs.forEach((str) => {
-    //     it(`glob with '${str}'`, async () => {
-    //         const paths = await globWithGit(str, {
-    //             ignoreGlobs: ['**/node_modules/**'],
-    //         })
-    //         snapshot(paths)
-    //     })
-    // })
     globs.forEach((str) => {
-        it(`glob relative paths with '${toUnixPath(
-            path.isAbsolute(str)
-                ? 'abs ' + path.relative(process.cwd(), str)
-                : str,
-        )}'`, async () => {
+        it(`glob relative paths with '${samePathOnCI(str)}'`, async () => {
             const paths = await globWithGit(str, {
+                absolute: false,
+                alwaysReturnUnixPaths: true,
+                ignoreGlobs: ['**/node_modules/**'],
+            })
+            snapshot(paths)
+        })
+    })
+})
+describe('globWithGitSync', () => {
+    const globs = [
+        './tests/**/*.txt',
+        '**/*.txt',
+        'tests/**/*.txt',
+        toUnixPath(path.resolve('tests/**/*.txt')),
+    ]
+    globs.forEach((str) => {
+        it(`glob relative paths with '${samePathOnCI(str)}'`, () => {
+            const paths = globWithGitSync(str, {
                 absolute: false,
                 alwaysReturnUnixPaths: true,
                 ignoreGlobs: ['**/node_modules/**'],
@@ -60,12 +72,26 @@ describe('glob normal', () => {
         toUnixPath(path.resolve('tests/**/*.txt')),
     ]
     globs.forEach((str) => {
-        it(`glob relative paths with '${toUnixPath(
-            path.isAbsolute(str)
-                ? 'abs ' + path.relative(process.cwd(), str)
-                : str,
-        )}'`, async () => {
+        it(`glob relative paths with '${samePathOnCI(str)}'`, async () => {
             const paths = await glob(str, {
+                absolute: false,
+                alwaysReturnUnixPaths: true,
+                ignoreGlobs: ['**/node_modules/**'],
+            })
+            snapshot(paths)
+        })
+    })
+})
+describe('globSync normal sync', () => {
+    const globs = [
+        './tests/**/*.txt',
+        '**/*.txt',
+        'tests/**/*.txt',
+        toUnixPath(path.resolve('tests/**/*.txt')),
+    ]
+    globs.forEach((str) => {
+        it(`glob relative paths with '${samePathOnCI(str)}'`, () => {
+            const paths = globSync(str, {
                 absolute: false,
                 alwaysReturnUnixPaths: true,
                 ignoreGlobs: ['**/node_modules/**'],
@@ -94,3 +120,11 @@ it('globFromGit with gitignore', async () => {
     assert.strictEqual(paths.length, 0)
     snapshot(paths)
 })
+
+function samePathOnCI(str: string) {
+    return toUnixPath(
+        path.isAbsolute(str)
+            ? 'absolute ' + path.relative(process.cwd(), str)
+            : str,
+    )
+}

@@ -1,4 +1,4 @@
-import { promises as fs, lstatSync, Stats } from 'fs'
+import fs, { lstatSync, Stats } from 'fs'
 import toUnixPath from 'slash'
 import globrex from 'globrex'
 import globalyzer from 'globalyzer'
@@ -23,7 +23,7 @@ async function walk(
 ) {
     const rgx = lexer.segments[level]
     const dir = resolve(opts.cwd, prefix, dirname)
-    const files = await fs.readdir(dir)
+    const files = await fs.promises.readdir(dir)
     const { dot, filesOnly } = opts
 
     let i = 0,
@@ -60,6 +60,67 @@ async function walk(
         !filesOnly && isMatch && output.push(join(prefix, relpath))
 
         await walk(
+            output,
+            prefix,
+            lexer,
+            opts,
+            relpath,
+            rgx && rgx.toString() !== lexer.globstar && level + 1,
+            ignore,
+            globsIgnore,
+        )
+    }
+}
+
+function walkSync(
+    output,
+    prefix,
+    lexer,
+    opts,
+    dirname = '',
+    level = 0,
+    ignore = [],
+    globsIgnore = [],
+) {
+    const rgx = lexer.segments[level]
+    const dir = resolve(opts.cwd, prefix, dirname)
+    const files = fs.readdirSync(dir)
+    const { dot, filesOnly } = opts
+
+    let i = 0,
+        len = files.length,
+        file
+    let fullpath, relpath, stats: Stats, isMatch
+
+    for (; i < len; i++) {
+        fullpath = join(dir, (file = files[i]))
+        relpath = dirname ? join(dirname, file) : file
+        if (!dot && isHidden.test(relpath)) continue
+        isMatch = lexer.regex.test(relpath)
+
+        if ((stats = CACHE[relpath]) === void 0) {
+            CACHE[relpath] = stats = lstatSync(fullpath)
+        }
+
+        if (!stats.isDirectory()) {
+            isMatch && output.push(relative(opts.cwd, fullpath))
+            continue
+        }
+        // console.log(basename(relpath))
+        if (ignore && ignore.includes(basename(relpath))) {
+            continue
+        }
+        if (
+            globsIgnore?.length &&
+            globsIgnore.some((toIgnore) => toIgnore.test(relpath))
+        ) {
+            continue
+        }
+
+        if (rgx && !rgx.test(file)) continue
+        !filesOnly && isMatch && output.push(join(prefix, relpath))
+
+        walkSync(
             output,
             prefix,
             lexer,
@@ -111,7 +172,7 @@ export async function glob(
 
     let { ignore = [], gitignore } = opts
     if (gitignore) {
-        ignore = [...ignore, ...(await getGlobsFromGitignore())]
+        ignore = [...ignore, ...getGlobsFromGitignore()]
     }
     ignore = uniq(ignore)
 
@@ -120,7 +181,7 @@ export async function glob(
     if (!glob.isGlob) {
         try {
             let resolved = resolve(opts.cwd, str)
-            let dirent = await fs.stat(resolved)
+            let dirent = fs.statSync(resolved)
             if (opts.filesOnly && !dirent.isFile()) return []
 
             return opts.absolute ? [resolved] : [str]
@@ -167,6 +228,62 @@ export async function glob(
     return matches
 }
 
+export function globSync(str: string, opts: GlobOptions = {}): string[] {
+    if (!str) return []
+
+    str = normalize(str)
+    str = toUnixPath(str)
+    let glob = globalyzer(str)
+
+    let { ignore = [], gitignore } = opts
+    if (gitignore) {
+        ignore = [...ignore, ...getGlobsFromGitignore()]
+    }
+    ignore = uniq(ignore)
+
+    opts.cwd = opts.cwd || '.'
+
+    if (!glob.isGlob) {
+        try {
+            let resolved = resolve(opts.cwd, str)
+            let dirent = fs.statSync(resolved)
+            if (opts.filesOnly && !dirent.isFile()) return []
+
+            return opts.absolute ? [resolved] : [str]
+        } catch (err) {
+            if (err.code != 'ENOENT') throw err
+
+            return []
+        }
+    }
+
+    if (opts.flush) CACHE = {}
+
+    let matches = []
+    const { path: globrexPath } = globrex(glob.glob, {
+        ...GLOBREX_OPTIONS,
+    })
+    // @ts-ignore
+    globrexPath.globstar = globrexPath.globstar.toString()
+
+    const { ignoreGlobs = [] } = opts
+    const globsIgnore = ignoreGlobs.map((x) => {
+        return globrex(x, {
+            ...GLOBREX_OPTIONS,
+        }).path.regex
+    })
+
+    walkSync(matches, glob.base, globrexPath, opts, '.', 0, ignore, globsIgnore)
+
+    if (opts.absolute) {
+        matches = matches.map((x) => path.join(opts.cwd, x))
+    }
+    if (opts.alwaysReturnUnixPaths) {
+        matches = matches.map(toUnixPath)
+    }
+    return matches
+}
+
 export const memoizedGlob = memoize(glob, {
     promise: true,
     normalizer: (args) => {
@@ -175,9 +292,9 @@ export const memoizedGlob = memoize(glob, {
     },
 })
 
-export const getGlobsFromGitignore = async (data = '') => {
+export const getGlobsFromGitignore = (data = '') => {
     try {
-        data = data || (await fs.readFile('.gitignore', { encoding: 'utf8' }))
+        data = data || fs.readFileSync('.gitignore', { encoding: 'utf8' })
         return data
             .split(/\r?\n/)
             .filter((line) => !/^\s*$/.test(line) && !/^\s*#/.test(line))
