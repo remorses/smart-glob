@@ -1,8 +1,9 @@
 # smart-glob
 
-`smart-glob`  exports 2 functions
-- `globWithGit` uses the git cache to search for files, the search time should be constant (around 40ms)
-- `glob` does a normal glob search, it also can ignore directories in the `ignore` field
+`smart-glob` exports 2 functions
+
+-   `globWithGit` uses the git cache to search for files, the search time should be constant (around 40ms)
+-   `glob` does a normal glob search, it also can ignore directories in the `ignore` field
 
 Both functions are tested in unix and windows environments (in windows return paths with `\\` delimiter unless `alwaysReturnUnixPaths` is provided)
 
@@ -50,16 +51,17 @@ You can find this benchmark in the `/tests` folder
 ```
 benchmarks
 
-tiny-glob: 157.726ms
-    ✓ tiny-glob (158ms)
-fast-glob: 8.392ms
+tiny-glob: 360.615ms
+    ✓ tiny-glob (361ms)
+fast-glob: 14.863ms
     ✓ fast-glob
-globby: 7.855ms
+globby: 18.128ms
     ✓ globby
-glob: 391.656ms
-    ✓ glob (392ms)
-smart-glob: 3.261ms
+glob: 930.975ms
+    ✓ glob (931ms)
+smart-glob: 6.296ms
     ✓ smart-glob
+smart-glob using git: 54.845ms
+    ✓ smart-glob using git (55ms)
 ```
 
-And then there is `globWithGit` which takes always 40ms, no matter how many files there are 😛
