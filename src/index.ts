@@ -1,2 +1,2 @@
-export * from './glob'
-export * from './git'
+export { glob } from './glob'
+export { globWithGit } from './git'

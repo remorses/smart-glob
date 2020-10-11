@@ -24,7 +24,9 @@ async function walk(
     const rgx = lexer.segments[level]
     const dir = resolve(opts.cwd, prefix, dirname)
     const files = await fs.promises.readdir(dir)
-    const { dot, filesOnly } = opts
+    const { dot, includeDirs } = opts
+
+    const filesOnly = !includeDirs
 
     let i = 0,
         len = files.length,
@@ -72,13 +74,6 @@ async function walk(
     }
 }
 
-function applyDefaults(opts: GlobOptions): GlobOptions {
-    return {
-        filesOnly: true,
-        ...opts,
-    }
-}
-
 function walkSync(
     output,
     prefix,
@@ -92,7 +87,7 @@ function walkSync(
     const rgx = lexer.segments[level]
     const dir = resolve(opts.cwd, prefix, dirname)
     const files = fs.readdirSync(dir)
-    const { dot, filesOnly } = opts
+    const { dot, includeDirs } = opts
 
     let i = 0,
         len = files.length,
@@ -125,7 +120,7 @@ function walkSync(
         }
 
         if (rgx && !rgx.test(file)) continue
-        !filesOnly && isMatch && output.push(join(prefix, relpath))
+        includeDirs && isMatch && output.push(join(prefix, relpath))
 
         walkSync(
             output,
@@ -145,7 +140,7 @@ export type GlobOptions = {
     dot?: boolean
     // convert output paths to absolute paths
     absolute?: boolean
-    filesOnly?: boolean
+    includeDirs?: boolean
     flush?: boolean
     // ignore patterns in .gitignore
     gitignore?: boolean
@@ -172,7 +167,7 @@ export async function glob(
     opts: GlobOptions = {},
 ): Promise<string[]> {
     if (!str) return []
-    opts = applyDefaults(opts)
+
     str = normalize(str)
     str = toUnixPath(str)
     let glob = globalyzer(str)
@@ -189,7 +184,7 @@ export async function glob(
         try {
             let resolved = resolve(opts.cwd, str)
             let dirent = fs.statSync(resolved)
-            if (opts.filesOnly && !dirent.isFile()) return []
+            if (!opts.includeDirs && !dirent.isFile()) return []
 
             return opts.absolute ? [resolved] : [str]
         } catch (err) {
@@ -237,7 +232,7 @@ export async function glob(
 
 export function globSync(str: string, opts: GlobOptions = {}): string[] {
     if (!str) return []
-    opts = applyDefaults(opts)
+
     str = normalize(str)
     str = toUnixPath(str)
     let glob = globalyzer(str)
@@ -254,7 +249,7 @@ export function globSync(str: string, opts: GlobOptions = {}): string[] {
         try {
             let resolved = resolve(opts.cwd, str)
             let dirent = fs.statSync(resolved)
-            if (opts.filesOnly && !dirent.isFile()) return []
+            if (!opts.includeDirs && !dirent.isFile()) return []
 
             return opts.absolute ? [resolved] : [str]
         } catch (err) {

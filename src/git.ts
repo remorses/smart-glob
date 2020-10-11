@@ -96,7 +96,7 @@ export async function globWithGit(
             e,
             'could not use git to get globbed files, traversing fs tree',
         )
-        return glob(globStr, { ...opts, filesOnly: true })
+        return glob(globStr, { ...opts })
     }
 }
 
@@ -120,7 +120,7 @@ export function globWithGitSync(
             e,
             `could not use git to search files with glob ${globStr}, traversing fs tree`,
         )
-        return globSync(globStr, { ...opts, filesOnly: true })
+        return globSync(globStr, { ...opts })
     }
 }
 
