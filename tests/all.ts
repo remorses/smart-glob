@@ -32,6 +32,7 @@ describe('globWithGit', () => {
         './tests/**/*.txt',
         '**/*.txt',
         'tests/**/*.txt',
+        'tests/dir/subDir/**',
         toUnixPath(path.resolve('tests/**/*.txt')),
     ]
     globs.forEach((str) => {

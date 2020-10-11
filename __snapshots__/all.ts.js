@@ -109,3 +109,8 @@ exports['glob non glob files globWithGit \'./tests/dir/exampleFile.txt\' 1'] = [
 exports['glob non glob files glob \'./tests/dir/exampleFile.txt\' 1'] = [
   "tests/dir/exampleFile.txt"
 ]
+
+exports['globWithGit glob relative paths with \'tests/dir/subDir/**\' 1'] = [
+  "tests/dir/subDir/example/file.txt",
+  "tests/dir/subDir/file.txt"
+]
