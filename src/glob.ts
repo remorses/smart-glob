@@ -72,6 +72,13 @@ async function walk(
     }
 }
 
+function applyDefaults(opts: GlobOptions): GlobOptions {
+    return {
+        filesOnly: true,
+        ...opts,
+    }
+}
+
 function walkSync(
     output,
     prefix,
@@ -155,7 +162,7 @@ export type GlobOptions = {
  * @param {String} [options.cwd='.'] Current working directory
  * @param {Boolean} [options.dot=false] Include dotfile matches
  * @param {Boolean} [options.absolute=false] Return absolute paths
- * @param {Boolean} [options.filesOnly=false] Do not include folders if true
+ * @param {Boolean} [options.filesOnly=true] Do not include folders if true
  * @param {Boolean} [options.flush=false] Reset cache object
  * @returns {Array} array containing matching files
  */
@@ -165,7 +172,7 @@ export async function glob(
     opts: GlobOptions = {},
 ): Promise<string[]> {
     if (!str) return []
-
+    opts = applyDefaults(opts)
     str = normalize(str)
     str = toUnixPath(str)
     let glob = globalyzer(str)
@@ -230,7 +237,7 @@ export async function glob(
 
 export function globSync(str: string, opts: GlobOptions = {}): string[] {
     if (!str) return []
-
+    opts = applyDefaults(opts)
     str = normalize(str)
     str = toUnixPath(str)
     let glob = globalyzer(str)

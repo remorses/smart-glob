@@ -45,6 +45,27 @@ describe('globWithGit', () => {
         })
     })
 })
+describe('glob non glob files', () => {
+    const globs = ['./tests/dir', './tests/dir/exampleFile.txt']
+    globs.forEach((str) => {
+        it(`globWithGit '${samePathOnCI(str)}'`, async () => {
+            const paths = await globWithGit(str, {
+                absolute: false,
+                alwaysReturnUnixPaths: true,
+                ignoreGlobs: ['**/node_modules/**'],
+            })
+            snapshot(paths)
+        })
+        it(`glob '${samePathOnCI(str)}'`, async () => {
+            const paths = await glob(str, {
+                absolute: false,
+                alwaysReturnUnixPaths: true,
+                ignoreGlobs: ['**/node_modules/**'],
+            })
+            snapshot(paths)
+        })
+    })
+})
 describe('globWithGitSync', () => {
     const globs = [
         './tests/**/*.txt',
