@@ -42,7 +42,7 @@ npm i -g smart-glob
 smart-glob './tests/**/*.tsx'
 ```
 
-## Benchmark (without using git)
+## Benchmark
 
 Here is a benchmark with other globs solutions run on this package folder ignoring the `node_modules` directory
 
